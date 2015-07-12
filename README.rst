@@ -27,19 +27,18 @@ Command line tools to generate a fast and human readable diff::
 Installation
 ------------
 
-This is not packaged yet in order to set that up, please::
+::
 
-    $ cabal sandbox init
-    $ cabal install yaml
-    $ cabal exec ghc yamlkeysdiff.hs
-
-And you got it!
+    $ cabal sandbox init  # Always use sandboxes (like python virtual env)
+    $ cabal install --only-dependencies  # Install the package dependencies
+    $ cabal configure
+    $ cabal build
+    $ ./dist/build/yamlkeysdiff/yamlkeysdiff
 
 
 TODO
 ----
 
-* Package it
 * Use getopt
 * Add support for unified diff (``--uniform`` in ``man diff``)
 * Write a generic diff function which can diff many files

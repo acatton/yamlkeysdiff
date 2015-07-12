@@ -1,9 +1,8 @@
 # Binary files
 *.hi
 *.o
+/dist
 
-# Executable
-/yamlkeysdiff
 
 # Yaml sandbox
 /cabal.sandbox.config
