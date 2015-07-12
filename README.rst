@@ -39,7 +39,6 @@ And you got it!
 TODO
 ----
 
-* Change return code if there is a diff or not
 * Package it
 * Use getopt
 * Add support for unified diff (``--uniform`` in ``man diff``)

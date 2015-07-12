@@ -14,6 +14,7 @@
 -- THE SOFTWARE.
 
 import System.Environment (getArgs)
+import System.Exit (exitWith, ExitCode(ExitSuccess, ExitFailure))
 import Data.Yaml (decodeFile, FromJSON, Value(Object))
 import Data.Maybe (fromMaybe)
 import Data.Text (unpack)
@@ -72,8 +73,12 @@ formatDiff lines =
 main :: IO ()
 main = do
     args <- getArgs
+    -- FIXME: This starts looking like spaghetti code
     case args of
-        [filePathA, filePathB] ->
-            putStr =<< (fmap formatDiff $ fileDiff filePathA filePathB)
+        [filePathA, filePathB] -> do
+            diffLines <- fileDiff filePathA filePathB
+            putStr $ formatDiff diffLines
+            exitWith $ if List.null diffLines then ExitSuccess
+                       else (ExitFailure 1)
         _ ->
             error "usage: yamlkeysdiff filename filename"
