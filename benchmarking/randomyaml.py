@@ -23,7 +23,7 @@ class RandomObject(object):
 
     def random_string(self):
         length = self.random_length()
-        return ''.join(self.rand.choice(string.printable) for i in range(length))
+        return ''.join(self.rand.choice(string.ascii_letters) for i in range(length))
 
     def random_dict(self):
         length = self.random_length()
