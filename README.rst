@@ -40,5 +40,6 @@ TODO
 ----
 
 * Use getopt
+* Add tests
 * Add support for unified diff (``--uniform`` in ``man diff``)
 * Write a generic diff function which can diff many files
