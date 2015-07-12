@@ -35,6 +35,10 @@ Installation
     $ cabal build
     $ ./dist/build/yamlkeysdiff/yamlkeysdiff
 
+You can also do that with::
+
+    $ make all
+
 
 TODO
 ----
