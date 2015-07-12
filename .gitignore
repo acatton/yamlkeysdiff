@@ -1,0 +1,10 @@
+# Binary files
+*.hi
+*.o
+
+# Executable
+/yamlkeysdiff
+
+# Yaml sandbox
+/cabal.sandbox.config
+/.cabal-sandbox
