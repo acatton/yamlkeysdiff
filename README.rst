@@ -48,4 +48,5 @@ TODO
 * Use getopt
 * Add tests
 * Add support for unified diff (``--uniform`` in ``man diff``)
+* Don't compare the subkeys when the parent key is missing
 * Write a generic diff function which can diff many files
