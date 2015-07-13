@@ -31,6 +31,8 @@ Installation
 
     $ cabal sandbox init  # Always use sandboxes (like python virtual env)
     $ cabal install --only-dependencies  # Install the package dependencies
+    # if this fails, try:
+    # cabal install --only-dependencies --force-reinstalls
     $ cabal configure
     $ cabal build
     $ ./dist/build/yamlkeysdiff/yamlkeysdiff
