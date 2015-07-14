@@ -53,4 +53,9 @@ sideBySideFormatting lines =
     in unlines $ map go lines
 
 
-unifiedFormatting = undefined
+unifiedFormatting lines =
+    -- FIXME: The format key thing is horrible
+    let formatKey = List.intercalate ":"
+        go (DiffMissing key) = "- " ++ (formatKey key)
+        go (DiffAdded key) = "+ " ++ (formatKey key)
+    in unlines $ map go $ filter (not . isSimilar) lines
