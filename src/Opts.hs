@@ -38,7 +38,6 @@ options =
     [ Option ['i'] ["ignore-case"]  (NoArg IgnoreCase) "ignore keys' case"
     , Option ['v'] ["version"]      (NoArg Version)    "show version number"
     , Option ['u'] ["unified"]      (NoArg Unified)    "unified diff"
-    , Option ['c'] ["context"]      (NoArg Copied)     "copied context diff"
     , Option ['y'] ["side-by-side"] (NoArg SideBySide) "side by side diff"
     , Option ['n'] ["normal"]       (NoArg Normal)     "normal diff"
     -- FIXME: This is not how it's supposed to be done
@@ -65,8 +64,7 @@ defaultFormattingFlag :: Flag
 defaultFormattingFlag = Normal
 
 formattingFunctions = Map.fromList
-    [ (Copied, Formatting.copiedFormatting)
-    , (Normal, Formatting.normalFormatting)
+    [ (Normal, Formatting.normalFormatting)
     , (SideBySide, Formatting.sideBySideFormatting)
     , (Unified, Formatting.unifiedFormatting)
     ]

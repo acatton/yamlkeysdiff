@@ -19,8 +19,6 @@ import qualified Data.List as List
 
 import Diff (DiffLine(DiffMissing, DiffAdded, DiffSimilar), isSimilar)
 
-copiedFormatting = undefined
-
 normalFormatting :: [DiffLine] -> String
 normalFormatting lines =
     let formatKey key = List.intercalate ":" key
