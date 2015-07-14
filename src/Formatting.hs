@@ -21,6 +21,7 @@ import Diff (DiffLine(DiffMissing, DiffAdded, DiffSimilar), isSimilar)
 
 normalFormatting :: [DiffLine] -> String
 normalFormatting lines =
+    -- FIXME: The formatKey thing is horrible
     let formatKey key = List.intercalate ":" key
         go (DiffMissing key) = "< " ++ (formatKey key)
         go (DiffAdded key) = "> " ++ (formatKey key)
