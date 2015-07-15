@@ -13,12 +13,12 @@
 -- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 -- THE SOFTWARE.
 
-import System.Environment (getArgs)
+import System.Environment (getArgs, getProgName)
 import System.Exit (exitWith, ExitCode(ExitSuccess, ExitFailure))
 import Data.Yaml (decodeFile, Value(Object))
 import qualified Data.List as List
 
-import YamlKeysDiff.Opts (getOptions, getFormattingFunction)
+import qualified YamlKeysDiff.Opts as Opts
 import YamlKeysDiff.Diff (diff)
 
 decodeFile' :: FilePath -> IO Value
@@ -36,14 +36,18 @@ getFiles args =
 
 main :: IO ()
 main = do
-    args <- getArgs
-    (flags, args') <- getOptions args
-    formattingFunction <- getFormattingFunction flags
-    (filePathA, filePathB) <- getFiles args'
-    contentA <- decodeFile' filePathA
-    contentB <- decodeFile' filePathB
-    let diffLines = diff contentA contentB
-    putStr $ formattingFunction diffLines
-    -- FIXME: ioError also exit with 1
-    exitWith $ if List.null diffLines then ExitSuccess
-               else (ExitFailure 1)
+    progName <- getProgName
+    argv <- getArgs
+    (flags, args) <- Opts.getOptions progName argv
+    if List.elem Opts.Help flags then
+        putStr $ Opts.usage progName
+    else do
+        formattingFunction <- Opts.getFormattingFunction flags
+        (filePathA, filePathB) <- getFiles args
+        contentA <- decodeFile' filePathA
+        contentB <- decodeFile' filePathB
+        let diffLines = diff contentA contentB
+        putStr $ formattingFunction diffLines
+        -- FIXME: ioError also exit with 1
+        exitWith $ if List.null diffLines then ExitSuccess
+                   else (ExitFailure 1)
