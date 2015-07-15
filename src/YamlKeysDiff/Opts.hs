@@ -19,6 +19,7 @@ import System.Console.GetOpt
 import Data.Map as Map
 import qualified Data.Set as Set
 import Data.Maybe (fromJust)
+import qualified Data.List as List
 
 import qualified YamlKeysDiff.Formatting as Formatting
 import YamlKeysDiff.Diff (DiffLine)
@@ -51,13 +52,16 @@ getFileArgs args =
         _ -> ioError (userError "You need to specify two files to compute the diff from")
 
 
-getOptions :: [String] -> IO ([Flag], [String])
-getOptions argv =
+getOptions :: String -> [String] -> IO ([Flag], [String])
+getOptions progName argv =
     case getOpt Permute options argv of
         (o, n, []) -> return (o, n)
-        (_, _, errs) ->
-            ioError (userError (concat errs ++ usageInfo header options))
-                where header = "Usage: yamlkeysdiff [OPTION...] FILES..."
+        (_, _, errs) -> ioError (userError (concat errs ++ usage progName))
+
+usage :: String -> String
+usage progName =
+    let header = "Usage: " ++ progName ++ " [OPTIONS...] FILES..." in
+    usageInfo header options
 
 
 defaultFormattingFlag :: Flag
