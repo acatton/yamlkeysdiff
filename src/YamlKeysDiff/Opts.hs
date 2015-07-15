@@ -13,15 +13,15 @@
 -- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 -- THE SOFTWARE.
 
-module Opts where
+module YamlKeysDiff.Opts where
 
 import System.Console.GetOpt
 import Data.Map as Map
 import qualified Data.Set as Set
 import Data.Maybe (fromJust)
 
-import qualified Formatting
-import Diff (DiffLine)
+import qualified YamlKeysDiff.Formatting as Formatting
+import YamlKeysDiff.Diff (DiffLine)
 
 
 data Flag = Copied

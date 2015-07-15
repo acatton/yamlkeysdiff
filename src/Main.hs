@@ -18,8 +18,8 @@ import System.Exit (exitWith, ExitCode(ExitSuccess, ExitFailure))
 import Data.Yaml (decodeFile, Value(Object))
 import qualified Data.List as List
 
-import Opts (getOptions, getFormattingFunction)
-import Diff (diff)
+import YamlKeysDiff.Opts (getOptions, getFormattingFunction)
+import YamlKeysDiff.Diff (diff)
 
 decodeFile' :: FilePath -> IO Value
 decodeFile' path = do

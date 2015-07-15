@@ -13,7 +13,7 @@
 -- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 -- THE SOFTWARE.
 
-module Diff where
+module YamlKeysDiff.Diff where
 
 import qualified Data.HashMap.Lazy as HashMap
 import Data.Maybe (fromMaybe)

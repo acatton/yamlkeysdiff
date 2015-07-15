@@ -13,11 +13,11 @@
 -- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 -- THE SOFTWARE.
 
-module Formatting where
+module YamlKeysDiff.Formatting where
 
 import qualified Data.List as List
 
-import Diff (DiffLine(DiffMissing, DiffAdded, DiffSimilar), isSimilar)
+import YamlKeysDiff.Diff (DiffLine(DiffMissing, DiffAdded, DiffSimilar), isSimilar)
 
 normalFormatting :: [DiffLine] -> String
 normalFormatting lines =
