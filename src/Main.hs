@@ -24,7 +24,7 @@ import Data.Text (pack)
 
 import qualified YamlKeysDiff.Opts as Opts
 import YamlKeysDiff.Filename (parseFileName)
-import YamlKeysDiff.Diff (diff)
+import YamlKeysDiff.Diff (diff, isSimilar)
 
 decodeFilename :: String -> IO (FilePath, [String])
 decodeFilename fileName =
@@ -74,5 +74,5 @@ main = do
         let diffLines = diff contentA contentB
         putStr $ formattingFunction diffLines
         -- FIXME: ioError also exit with 1
-        exitWith $ if List.null diffLines then ExitSuccess
+        exitWith $ if all isSimilar diffLines then ExitSuccess
                    else (ExitFailure 1)
