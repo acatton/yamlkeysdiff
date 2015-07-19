@@ -13,72 +13,66 @@
 -- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 -- THE SOFTWARE.
 
-import System.Environment (getArgs)
+import System.Environment (getArgs, getProgName)
 import System.Exit (exitWith, ExitCode(ExitSuccess, ExitFailure))
-import Data.Yaml (decodeFile, FromJSON, Value(Object))
-import Data.Maybe (fromMaybe)
-import Data.Text (unpack)
+import qualified Data.Yaml as Yaml
 import qualified Data.List as List
+import qualified Data.Either as Either
 import qualified Data.HashMap.Lazy as HashMap
+import Control.Monad (foldM)
+import Data.Text (pack)
 
-data DiffLine = DiffMissing [String]
-              | DiffAdded [String]
+import qualified YamlKeysDiff.Opts as Opts
+import YamlKeysDiff.Filename (parseFileName)
+import YamlKeysDiff.Diff (diff, isSimilar)
+
+decodeFilename :: String -> IO (FilePath, [String])
+decodeFilename fileName =
+    case parseFileName fileName of
+        Either.Right a -> return a
+        Either.Left e ->
+            ioError $ userError $ "couldn't parse filename " ++ fileName
 
 
-getKeys :: Value -> [[String]]
-getKeys value =
-    let getObject (Object obj) = Just obj
-        getObject _ = Nothing
-        go path obj = concat $ List.map (go' path) $ HashMap.toList obj
-        go' path (key, value) =
-            let path' = path ++ [key] in
-            fromMaybe [path'] $ fmap (go path') $ getObject value
-    in map (map unpack) $ fromMaybe [] $ fmap (go []) $ getObject value
+decodeFile :: FilePath -> IO Yaml.Value
+decodeFile path = do
+    (fileName, keys) <- decodeFilename path
+    maybeContent <- Yaml.decodeFile fileName
+    content <- case maybeContent of
+        Just c -> return c
+        Nothing -> ioError $ userError $ "couldn't decode file " ++ fileName
+    case getValue keys content of
+        Just v -> return v
+        Nothing -> ioError $ userError $ "couldn't find the key " ++ List.intercalate ":" keys
 
-diff :: Value -> Value -> [DiffLine]
-diff contentA contentB =
-    let keysA = List.sort $ getKeys contentA
-        keysB = List.sort $ getKeys contentB
+getValue :: [String] -> Yaml.Value -> Maybe Yaml.Value
+getValue keys value =
+    let getKey key value =
+            case value of
+                Yaml.Object obj -> HashMap.lookup key obj
+                _ -> Nothing
+    in foldM (flip getKey) value $ map pack keys
 
-        go al@(a:at) bl@(b:bt) =
-            if a == b then go at bt
-            else if a < b then (DiffAdded a) : (go at bl)
-            else (DiffMissing b) : (go al bt)
-        go [] (b:t) = (DiffMissing b) : (go [] t)
-        go (a:t) [] = (DiffAdded a) : (go t [])
-        go [] [] = []
-
-    in go keysA keysB
-
-fileDiff :: FilePath -> FilePath -> IO [DiffLine]
-fileDiff filePathA filePathB =
-    let decodeFile' path = do
-            maybeContent <- decodeFile path
-            case maybeContent of
-                Just content -> return content
-                Nothing -> error $ "couldn't decode file " ++ path
-    in do
-    contentA <- decodeFile' filePathA
-    contentB <- decodeFile' filePathB
-    return $ diff contentA contentB
-
-formatDiff :: [DiffLine] -> String
-formatDiff lines =
-    let formatKey key = List.intercalate ":" key
-        go (DiffMissing key) = "< " ++ (formatKey key)
-        go (DiffAdded key) = "> " ++ (formatKey key)
-    in unlines $ map go lines
-
+getFiles :: [String] -> IO (String, String)
+getFiles args =
+    case args of
+        [a, b] -> return (a, b)
+        _ -> ioError (userError "Please specify two files")
 
 main :: IO ()
 main = do
-    args <- getArgs
-    -- FIXME: This starts looking like spaghetti code
-    case args of
-        [filePathA, filePathB] -> do
-            diffLines <- fileDiff filePathA filePathB
-            putStr $ formatDiff diffLines
-            exitWith $ if List.null diffLines then ExitSuccess
-                       else (ExitFailure 1)
-        _ ->
-            error "usage: yamlkeysdiff filename filename"
+    progName <- getProgName
+    argv <- getArgs
+    (flags, args) <- Opts.getOptions progName argv
+    if List.elem Opts.Help flags then
+        putStr $ Opts.usage progName
+    else do
+        formattingFunction <- Opts.getFormattingFunction flags
+        (filePathA, filePathB) <- getFiles args
+        contentA <- decodeFile filePathA
+        contentB <- decodeFile filePathB
+        let diffLines = diff contentA contentB
+        putStr $ formattingFunction diffLines
+        -- FIXME: ioError also exit with 1
+        exitWith $ if all isSimilar diffLines then ExitSuccess
+                   else (ExitFailure 1)

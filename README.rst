@@ -23,6 +23,9 @@ Command line tools to generate a fast and human readable diff::
     < c
     > d:A
     < d:c
+    $ yamlkeysdiff "a.yml#d" "b.yml#d"
+    > A
+    < c
 
 Installation
 ------------
