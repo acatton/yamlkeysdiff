@@ -30,6 +30,14 @@ Command line tools to generate a fast and human readable diff::
 Installation
 ------------
 
+You can install it from hackage::
+
+    $ cabal update
+    $ cabal install yamlkeysdiff
+
+Development
+------------
+
 ::
 
     $ cabal sandbox init  # Always use sandboxes (like python virtual env)
