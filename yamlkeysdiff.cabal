@@ -18,7 +18,10 @@ cabal-version:       >=1.10
 
 executable yamlkeysdiff
   main-is:             Main.hs
-  -- other-modules:       
+  other-modules:       YamlKeysDiff.Diff
+                       YamlKeysDiff.Filename
+                       YamlKeysDiff.Formatting
+                       YamlKeysDiff.Opts
   -- other-extensions:    
   build-depends:       base >=4.6 && <4.8,
                        containers >= 0.5 && <0.6,
