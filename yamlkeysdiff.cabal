@@ -2,7 +2,7 @@
 -- documentation, see http://haskell.org/cabal/users-guide/
 
 name:                yamlkeysdiff
-version:             0.5.1-dev
+version:             0.5.1
 synopsis:            Compares the keys from two yaml files
 -- description:         
 homepage:            https://github.com/acatton/yamlkeysdiff
